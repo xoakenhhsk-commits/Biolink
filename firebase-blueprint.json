@@ -1,0 +1,55 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Thông tin tài khoản người dùng BioLink Studio",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["userId", "email"]
+    },
+    "BioProfile": {
+      "title": "BioProfile",
+      "description": "Trang Bio / Link in Bio cá nhân hóa của người dùng",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "ownerId": { "type": "string" },
+        "slug": { "type": "string", "maxLength": 100 },
+        "displayName": { "type": "string", "maxLength": 200 },
+        "bio": { "type": "string", "maxLength": 2000 },
+        "avatarUrl": { "type": "string" },
+        "bannerUrl": { "type": "string" },
+        "location": { "type": "string", "maxLength": 150 },
+        "pronouns": { "type": "string", "maxLength": 50 },
+        "statusPill": { "type": "string", "maxLength": 100 },
+        "verified": { "type": "boolean" },
+        "theme": { "type": "object" },
+        "socialLinks": { "type": "array" },
+        "blocks": { "type": "array" },
+        "stats": { "type": "object" },
+        "leads": { "type": "array" },
+        "isPublished": { "type": "boolean" },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["id", "slug", "displayName"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "Lưu thông tin tài khoản người dùng"
+    },
+    "/bios/{bioId}": {
+      "schema": "BioProfile",
+      "description": "Lưu trữ toàn bộ cấu hình trang bio, blocks, theme, leads và stats"
+    }
+  }
+}

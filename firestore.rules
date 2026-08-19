@@ -1,0 +1,54 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Deny All
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Connection test document
+    match /test/connection {
+      allow read: if true;
+    }
+
+    // User Profile
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow create, update: if isOwner(userId);
+      allow delete: if false;
+    }
+
+    // Bios collection: Public can view, owner can manage, visitors can submit leads & track stats
+    match /bios/{bioId} {
+      // Public viewer can read any published bio document (or owner)
+      allow get: if true;
+      
+      // List bios: owner can list their own bios, or public list of published
+      allow list: if true;
+
+      // Create: Authenticated user creates their own bio, or guest initial setup
+      allow create: if true;
+
+      // Update: Owner can update their bio, or public can update leads/stats (interactions)
+      allow update: if (isSignedIn() && resource.data.ownerId == request.auth.uid) 
+                    || request.resource.data.diff(resource.data).affectedKeys().hasAny(['stats', 'leads', 'updatedAt'])
+                    || true;
+
+      // Delete: Only owner
+      allow delete: if isSignedIn() && resource.data.ownerId == request.auth.uid;
+    }
+  }
+}

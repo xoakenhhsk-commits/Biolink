@@ -1,0 +1,8 @@
+{
+  "name": "BioLink Studio",
+  "description": "Nền tảng thiết kế, xuất bản và quản lý trang Bio Link chuyên nghiệp với giao diện tùy biến thời gian thực, tích hợp AI và thống kê truy cập.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
